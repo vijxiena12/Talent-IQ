@@ -13,6 +13,12 @@ node_modules/
 
 # Databases
 .chroma_db/
+*.db
+*.db-wal
+*.db-shm
+Backend/data/resumes/
+Backend/dummy_resume.pdf
+Backend/error.log
 
 # Build
 dist/
