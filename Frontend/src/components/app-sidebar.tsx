@@ -33,12 +33,8 @@ import { cn } from "@/lib/utils"
 const recruiterNavItems = [
   {
     title: "Overview",
-    url: "/dashboard",
-    icon: Home,
-  },
-  {
-    url: "/dashboard",
-    icon: Briefcase,
+    url: "/insights",
+    icon: BrainCircuit,
   },
   {
     title: "Job Openings",

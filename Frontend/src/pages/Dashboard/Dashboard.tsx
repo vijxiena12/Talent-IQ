@@ -1,5 +1,4 @@
 import { Navigate } from "react-router-dom"
-import RecruiterDashboard from "@/pages/Recruiter/RecruiterDashboard"
 import IndividualDashboard from "@/pages/Individual/IndividualDashboard"
 
 export default function Dashboard() {
@@ -12,7 +11,7 @@ export default function Dashboard() {
   const user = JSON.parse(userStr)
   
   if (user.role === "RECRUITER") {
-    return <RecruiterDashboard />
+    return <Navigate to="/insights" replace />
   }
 
   return <IndividualDashboard />

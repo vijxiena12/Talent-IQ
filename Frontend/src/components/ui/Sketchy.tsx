@@ -33,13 +33,14 @@ export function SquiggleFilter() {
 
 // --- 2. Hand-Drawn Components ---
 
-export function SketchButton({ children, className }: { children: React.ReactNode; className?: string }) {
+export function SketchButton({ children, className, onClick }: { children: React.ReactNode; className?: string; onClick?: () => void }) {
     return (
         <motion.button
             whileHover={{ scale: 1.05, rotate: -1 }}
             whileTap={{ scale: 0.95, rotate: 1 }}
+            onClick={onClick}
             className={cn(
-                "relative px-8 py-3 font-bold text-slate-800 transition-colors group",
+                "relative px-8 py-3 font-bold text-slate-800 transition-colors group cursor-pointer",
                 className
             )}
         >
@@ -49,7 +50,7 @@ export function SketchButton({ children, className }: { children: React.ReactNod
                 </svg>
             </div>
             <div className="absolute inset-0 top-1 left-1 -z-10 h-full w-full rounded-lg bg-yellow-300 opacity-0 transition-opacity group-hover:opacity-100" style={{ filter: "url(#squiggle)" }} />
-            <span className="relative z-10 flex items-center gap-2">{children}</span>
+            <span className="relative z-10 flex items-center justify-center gap-2">{children}</span>
         </motion.button>
     );
 };
@@ -57,9 +58,9 @@ export function SketchButton({ children, className }: { children: React.ReactNod
 export function StickyNote({ children, color = "bg-yellow-200", rotate = 0, className }: any) {
     return (
         <motion.div
-            whileHover={{ scale: 1.1, rotate: rotate * -1, zIndex: 10 }}
+            whileHover={{ scale: 1.05, rotate: rotate * -1, zIndex: 10 }}
             className={cn(
-                "relative flex h-64 w-64 flex-col justify-between p-6 shadow-sm",
+                "relative flex h-65 w-65 flex-col justify-between p-6 border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(30,41,59,1)] transition-all duration-150",
                 color,
                 className
             )}
@@ -69,7 +70,7 @@ export function StickyNote({ children, color = "bg-yellow-200", rotate = 0, clas
             }}
         >
             <div className="absolute -top-3 left-1/2 h-8 w-24 -translate-x-1/2 bg-white/40 shadow-sm rotate-1" />
-            <div className="font-handwriting text-slate-800 text-lg leading-relaxed">
+            <div className="font-handwriting text-slate-800 text-2xl leading-relaxed">
                 {children}
             </div>
             <div className="self-end opacity-50">
@@ -94,7 +95,7 @@ export function GraphPaper() {
 // --- 4. Hero Section with Live Drawing ---
 export function Hero() {
     return (
-        <section className="relative flex min-h-screen flex-col items-center justify-center pt-24 pb-12 overflow-hidden px-4">
+        <section className="relative flex min-h-screen flex-col items-center justify-center pt-32 pb-16 overflow-hidden px-4">
             <div className="relative mb-6 text-center">
                 <motion.div
                     initial={{ scaleX: 0 }}
@@ -126,37 +127,129 @@ export function Hero() {
                 with AI-driven hiring.
             </h1>
 
-            <p className="mt-8 max-w-lg text-center font-medium text-slate-500 text-lg leading-relaxed">
+            <p className="mt-8 max-w-lg text-center font-medium text-slate-500 text-lg leading-relaxed font-sans">
                 Intelligent candidate screening, interview orchestration, and offer management in one polished workspace built for modern talent teams.
             </p>
 
-            <div className="mt-12 flex gap-6">
-                <SketchButton>
-                    Start Hiring <ArrowRight size={18} />
-                </SketchButton>
-                <button className="px-6 py-3 font-mono text-sm font-bold text-slate-500 underline decoration-wavy underline-offset-4 hover:text-slate-900">
+            <div className="mt-12 flex gap-6 z-10">
+                <Link to="/signup">
+                    <SketchButton>
+                        Start Hiring <ArrowRight size={18} />
+                    </SketchButton>
+                </Link>
+                <a href="#platform" className="px-6 py-3 font-mono text-sm font-bold text-slate-500 underline decoration-wavy underline-offset-4 hover:text-slate-900">
                     Explore Features
-                </button>
+                </a>
             </div>
 
-            <div className="mt-20 w-full max-w-4xl">
-                <div className="relative aspect-video w-full rounded-xl border-2 border-slate-900 bg-white p-4 shadow-xl" style={{ filter: "url(#squiggle)" }}>
-                    <div className="flex items-center gap-2 border-b-2 border-slate-900 pb-4 mb-8">
+            <div className="mt-20 w-full max-w-4xl px-4">
+                <div className="relative w-full rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[8px_8px_0px_0px_rgba(30,41,59,1)]" style={{ filter: "url(#squiggle)" }}>
+                    <div className="flex items-center gap-2 border-b-2 border-slate-900 pb-4 mb-6">
                         <div className="h-3 w-3 rounded-full border border-slate-900 bg-red-400" />
                         <div className="h-3 w-3 rounded-full border border-slate-900 bg-yellow-400" />
                         <div className="h-3 w-3 rounded-full border border-slate-900 bg-green-400" />
+                        <span className="font-mono text-[10px] text-slate-400 ml-2">talent-iq-dashboard.app</span>
                     </div>
-                    <div className="grid grid-cols-12 gap-4 h-64">
-                        <motion.div initial={{ height: 0 }} animate={{ height: "100%" }} transition={{ duration: 1, delay: 0.5 }} className="col-span-3 rounded-lg border-2 border-dashed border-slate-300 bg-slate-50" />
-                        <div className="col-span-9 flex flex-col gap-4">
-                            <motion.div initial={{ width: 0 }} animate={{ width: "100%" }} transition={{ duration: 0.8, delay: 1 }} className="h-32 w-full rounded-lg border-2 border-slate-900 bg-blue-50" />
-                            <div className="flex gap-4 h-full">
-                                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.5, delay: 1.8 }} className="h-full w-1/2 rounded-lg border-2 border-slate-900 bg-yellow-50" />
-                                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.5, delay: 2.0 }} className="h-full w-1/2 rounded-lg border-2 border-slate-900 bg-pink-50" />
+                    
+                    <div className="grid grid-cols-12 gap-4 text-xs font-mono text-slate-700 min-h-[300px]">
+                        {/* Sidebar */}
+                        <motion.div 
+                            initial={{ x: -20, opacity: 0 }}
+                            animate={{ x: 0, opacity: 1 }}
+                            transition={{ duration: 0.5, delay: 0.4 }}
+                            className="col-span-12 md:col-span-3 border-2 border-slate-900 rounded-xl bg-slate-50 p-3 flex flex-col gap-3 justify-between"
+                        >
+                            <div className="space-y-3">
+                                <div className="font-bold border-b border-slate-900 pb-2 text-[10px] uppercase text-slate-400">TalentIQ App</div>
+                                <div className="space-y-1.5">
+                                    <div className="flex items-center gap-1.5 bg-yellow-200 border border-slate-900 p-1.5 rounded font-bold text-[10px] shadow-[2px_2px_0px_0px_#000]"><Layout size={10} /> Overview</div>
+                                    <div className="flex items-center gap-1.5 p-1.5 hover:bg-slate-100 rounded text-[10px]"><User size={10} /> Candidates</div>
+                                    <div className="flex items-center gap-1.5 p-1.5 hover:bg-slate-100 rounded text-[10px]"><Shapes size={10} /> ATS Engine</div>
+                                </div>
+                            </div>
+                            <div className="text-[8px] text-slate-400 text-center font-mono">v1.2 // Active</div>
+                        </motion.div>
+
+                        {/* Main Work Area */}
+                        <div className="col-span-12 md:col-span-9 flex flex-col gap-4">
+                            {/* Analytics Summary */}
+                            <motion.div 
+                                initial={{ y: -20, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                transition={{ duration: 0.5, delay: 0.6 }}
+                                className="border-2 border-slate-900 rounded-xl bg-blue-50 p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3"
+                            >
+                                <div>
+                                    <div className="font-black text-slate-900 text-[14px]">AI Resume Screening</div>
+                                    <div className="text-[10px] text-slate-500 font-medium">Auto-filtering & scoring in progress</div>
+                                </div>
+                                <div className="flex items-center gap-2 bg-white px-2.5 py-1 border-2 border-slate-900 rounded-lg shadow-[2px_2px_0px_0px_#000]">
+                                    <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                                    <span className="font-bold text-[9px] uppercase">94% Accuracy</span>
+                                </div>
+                            </motion.div>
+
+                            {/* Candidate List & Sparkline Charts */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
+                                {/* Top Matches */}
+                                <motion.div 
+                                    initial={{ scale: 0.9, opacity: 0 }}
+                                    animate={{ scale: 1, opacity: 1 }}
+                                    transition={{ duration: 0.5, delay: 0.8 }}
+                                    className="border-2 border-slate-900 rounded-xl bg-yellow-50/50 p-3 flex flex-col justify-between"
+                                >
+                                    <span className="font-bold text-[10px] text-slate-400 uppercase tracking-wider mb-2 block">Top Match Stream</span>
+                                    <div className="space-y-2">
+                                        <div className="border border-slate-950 bg-white p-2 rounded-lg flex justify-between items-center">
+                                            <div>
+                                                <div className="font-black text-[11px] text-slate-900">Sarah Jenkins</div>
+                                                <div className="flex gap-1 mt-0.5">
+                                                    <span className="bg-blue-100 text-[8px] px-1 rounded font-bold text-blue-700">React</span>
+                                                    <span className="bg-purple-100 text-[8px] px-1 rounded font-bold text-purple-700">Node</span>
+                                                </div>
+                                            </div>
+                                            <span className="font-black text-[11px] text-green-600 bg-green-50 border border-green-200 px-1 rounded">96%</span>
+                                        </div>
+                                        <div className="border border-slate-950 bg-white p-2 rounded-lg flex justify-between items-center">
+                                            <div>
+                                                <div className="font-black text-[11px] text-slate-900">Alex Rivera</div>
+                                                <div className="flex gap-1 mt-0.5">
+                                                    <span className="bg-yellow-100 text-[8px] px-1 rounded font-bold text-yellow-700">Python</span>
+                                                    <span className="bg-red-100 text-[8px] px-1 rounded font-bold text-red-700">AI</span>
+                                                </div>
+                                            </div>
+                                            <span className="font-black text-[11px] text-yellow-600 bg-yellow-50 border border-yellow-200 px-1 rounded">89%</span>
+                                        </div>
+                                    </div>
+                                </motion.div>
+
+                                {/* Mini Chart Card */}
+                                <motion.div 
+                                    initial={{ scale: 0.9, opacity: 0 }}
+                                    animate={{ scale: 1, opacity: 1 }}
+                                    transition={{ duration: 0.5, delay: 1.0 }}
+                                    className="border-2 border-slate-900 rounded-xl bg-pink-50 p-3 flex flex-col justify-between"
+                                >
+                                    <span className="font-bold text-[10px] text-slate-400 uppercase tracking-wider mb-1 block">Velocity Index</span>
+                                    <div className="flex-1 flex items-end min-h-[50px] mb-2">
+                                        <svg className="w-full h-16 overflow-visible" viewBox="0 0 100 50">
+                                            <path 
+                                                d="M 0 45 Q 25 15 50 30 T 100 5" 
+                                                fill="none" 
+                                                stroke="#1e293b" 
+                                                strokeWidth="3.5"
+                                                style={{ filter: "url(#squiggle)" }}
+                                            />
+                                            <circle cx="100" cy="5" r="3" className="fill-red-500 stroke-slate-900 stroke-2" />
+                                        </svg>
+                                    </div>
+                                    <span className="font-black text-[14px] text-slate-900 block">4.8x Screening Speed</span>
+                                </motion.div>
                             </div>
                         </div>
                     </div>
-                    <motion.div initial={{ x: 0, y: 0, opacity: 0 }} animate={{ x: [0, 200, 400, 300], y: [0, 100, 50, 200], opacity: 1 }} transition={{ duration: 3, repeat: Infinity, repeatType: "reverse" }} className="absolute top-0 left-0 pointer-events-none">
+
+                    <motion.div initial={{ x: 0, y: 0, opacity: 0 }} animate={{ x: [0, 200, 400, 300], y: [0, 100, 50, 200], opacity: 1 }} transition={{ duration: 3, repeat: Infinity, repeatType: "reverse" }} className="absolute top-0 left-0 pointer-events-none hidden md:block">
                         <PenTool className="h-8 w-8 text-slate-900 -rotate-12 drop-shadow-lg" fill="white" />
                     </motion.div>
                 </div>
@@ -170,30 +263,123 @@ export function FeatureBoard() {
     return (
         <section id="platform" className="py-32 px-4 overflow-hidden relative">
             <div className="mx-auto max-w-6xl">
-                <div className="mb-20 flex items-end justify-between border-b-2 border-slate-900 pb-4">
-                    <h2 className="text-4xl font-black text-slate-900">
-                        The <span className="text-blue-600 decoration-wavy underline italic">Talent</span> Blueprint.
+                {/* Section Header */}
+                <div className="text-center mb-24 max-w-3xl mx-auto relative">
+                    {/* Floating Handwritten Tag */}
+                    <div className="absolute -top-12 left-1/2 -translate-x-1/2 md:translate-x-12 md:left-2/3 flex items-center gap-1.5 font-handwriting text-2xl text-red-500 font-bold -rotate-3 z-10 whitespace-nowrap">
+                        <span>⚠️ The hard truth</span>
+                        <motion.span 
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                            className="inline-block"
+                        >
+                            <Star size={20} fill="currentColor" />
+                        </motion.span>
+                    </div>
+
+                    <span className="font-mono text-xs uppercase tracking-widest text-red-650 font-bold bg-red-50 border-2 border-red-200 px-3 py-1 rounded-full shadow-[2px_2px_0px_0px_rgba(239,68,68,0.2)]">
+                        The Core Friction
+                    </span>
+
+                    <h2 className="text-5xl md:text-7xl font-black text-slate-900 mt-6 leading-[1.1] tracking-tighter">
+                        Why{" "}
+                        <span 
+                            className="relative inline-block px-5 py-1.5 text-white bg-red-500 border-4 border-slate-900 shadow-[4px_4px_0px_0px_#000] -rotate-2 rounded-2xl mx-1"
+                            style={{ filter: "url(#squiggle)" }}
+                        >
+                            Traditional
+                        </span>{" "}
+                        <br />
+                        Hiring is{" "}
+                        <span className="relative inline-block text-red-650 italic">
+                            Broken
+                            <svg className="absolute -left-2 -bottom-2 h-4 w-[115%] text-red-500 pointer-events-none overflow-visible" viewBox="0 0 100 10" preserveAspectRatio="none">
+                                <path d="M0,5 C30,9 70,2 100,5" stroke="currentColor" strokeWidth="4" fill="none" style={{ filter: "url(#squiggle)" }} />
+                            </svg>
+                        </span>.
                     </h2>
-                    <Ruler className="text-slate-400" />
+                    
+                    <p className="mt-8 text-slate-500 font-medium text-lg leading-relaxed max-w-xl mx-auto font-sans">
+                        Both candidates and companies face structural roadblocks that turn recruitment into a slow, high-anxiety black box.
+                    </p>
                 </div>
-                <div className="flex flex-wrap justify-center gap-12">
+
+
+                {/* 3-Column Problem Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
                     {[
-                        { icon: <Layout />, color: "bg-yellow-200", title: "Pipeline Visibility", desc: "See every candidate stage clearly and keep hiring moving." },
-                        { icon: <Shapes />, color: "bg-blue-200", title: "AI Match", desc: "Surface the strongest candidates with automated scoring." },
-                        { icon: <PenTool />, color: "bg-pink-200", title: "Faster Offers", desc: "Turn interviews into hires with built-in offer workflows." }
-                    ].map((f, i) => (
-                        <StickyNote key={i} rotate={i % 2 === 0 ? -2 : 2} color={f.color}>
-                            <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full border-2 border-slate-800 bg-white">
-                                {f.icon}
+                        {
+                            num: "01",
+                            title: "The ATS Resume Trap",
+                            subtitle: "The Filtering Abyss",
+                            desc: "Over 75% of applications are discarded by rigid keyword bots before ever reaching human eyes. Candidates get zero feedback, and companies miss out on high-potential talent.",
+                            color: "bg-red-50",
+                            accentColor: "border-red-500 text-red-600 bg-red-100",
+                            icon: <Scissors size={18} />,
+                            rotate: "-rotate-1"
+                        },
+                        {
+                            num: "02",
+                            title: "The Prep Blindspot",
+                            subtitle: "Anxiety & Misalignment",
+                            desc: "Candidates face high-stakes technical coding tests and conversational screening interviews without any realistic, tailored practice. This leads to performance anxiety and false negatives.",
+                            color: "bg-orange-50/70",
+                            accentColor: "border-orange-500 text-orange-600 bg-orange-100",
+                            icon: <MessageCircle size={18} />,
+                            rotate: "rotate-1"
+                        },
+                        {
+                            num: "03",
+                            title: "Screening Bottlenecks",
+                            subtitle: "Massive Recruiter Waste",
+                            desc: "Talent teams spend over 140 hours monthly manually reviewing resumes and coordinating basic technical phone screens just to verify basic skills and conversational fluency.",
+                            color: "bg-rose-50/70",
+                            accentColor: "border-rose-500 text-rose-600 bg-rose-100",
+                            icon: <Zap size={18} />,
+                            rotate: "-rotate-1"
+                        }
+                    ].map((p, i) => (
+                        <div
+                            key={i}
+                            className={`relative p-8 border-2 border-slate-900 rounded-3xl ${p.color} shadow-[6px_6px_0px_0px_rgba(30,41,59,1)] hover:shadow-[10px_10px_0px_0px_rgba(30,41,59,1)] transition-all duration-300 flex flex-col justify-between`}
+                            style={{
+                                filter: "url(#squiggle)",
+                                transform: p.rotate
+                            }}
+                        >
+                            {/* Tape Decoration */}
+                            <div className="absolute -top-3.5 left-12 h-7 w-20 bg-white/60 shadow-sm border border-slate-300 -rotate-1 rounded-sm" />
+                            
+                            <div className="relative">
+                                {/* Top Badging */}
+                                <div className="flex justify-between items-start mb-6">
+                                    <div className={`h-9 w-9 rounded-full border-2 border-slate-900 flex items-center justify-center shadow-[2px_2px_0px_0px_#000] ${p.accentColor}`}>
+                                        {p.icon}
+                                    </div>
+                                    <span className="text-xs font-black font-mono border-2 border-slate-950 px-2 py-0.5 rounded-lg bg-white shadow-[2px_2px_0px_0px_#000]">
+                                        {p.num}
+                                    </span>
+                                </div>
+
+                                <h3 className="font-black text-2xl text-slate-900 mb-4 font-heading tracking-tight leading-tight">
+                                    {p.title}
+                                </h3>
+                                
+                                <p className="text-slate-600 font-sans text-sm leading-relaxed mb-6 font-medium">
+                                    {p.desc}
+                                </p>
                             </div>
-                            <h3 className="font-bold text-xl mb-2">{f.title}</h3>
-                            <p className="text-sm">{f.desc}</p>
-                        </StickyNote>
+
+                            <div className="pt-4 border-t border-dashed border-slate-900/10 flex justify-between items-center mt-auto">
+                                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">{p.subtitle}</span>
+                                <Scissors size={14} className="opacity-30" />
+                            </div>
+                        </div>
                     ))}
                 </div>
             </div>
         </section>
-    )
+    );
 }
 
 // --- 6. Sketchbook Showcase (Horizontal Scroll) ---
@@ -229,6 +415,7 @@ export function SketchbookShowcase() {
             imageSrc: "/src/assets/ats-resume.png",
             imageAlt: "ATS Resume",
             buttonText: "Check ATS Score",
+            link: "/resumes",
         },
         {
             title: "Mock Interview",
@@ -239,6 +426,7 @@ export function SketchbookShowcase() {
             imageSrc: "/src/assets/mock-interview.png",
             imageAlt: "Mock Interview",
             buttonText: "Start Mock Interview",
+            link: "/screening",
         },
         {
             title: "Coding Assessment",
@@ -249,18 +437,19 @@ export function SketchbookShowcase() {
             imageSrc: "/src/assets/coding-assessment.png",
             imageAlt: "Coding Assessment",
             buttonText: "Take Assessment",
+            link: "/individual/assessment",
         },
     ];
 
     return (
-        <section ref={triggerRef} className="overflow-hidden bg-[#fdfbf7] border-y-2 border-slate-900">
+        <section id="showcase" ref={triggerRef} className="overflow-hidden bg-[#fdfbf7] border-y-2 border-slate-900">
             <div ref={sectionRef} className="flex w-[300%] h-screen">
                 {projects.map((p, i) => (
-                    <div key={i} className="w-screen h-full flex items-center justify-center p-20 relative border-r-2 border-slate-200">
-                        <div className="absolute top-10 left-10 text-8xl font-black text-slate-100 uppercase pointer-events-none">
+                    <div key={i} className="w-screen h-full flex items-center justify-center p-6 md:p-20 relative border-r-2 border-slate-200">
+                        <div className="absolute top-10 left-10 text-6xl md:text-8xl font-black text-slate-100 uppercase pointer-events-none">
                             Flow {i + 1}
                         </div>
-                        <div className={cn("w-full max-w-4xl aspect-[4/3] border-4 border-slate-900 rounded-2xl shadow-2xl p-8 flex flex-col gap-6", p.color)} style={{ filter: "url(#squiggle)" }}>
+                        <div className={cn("w-full max-w-4xl aspect-[4/3] border-4 border-slate-900 rounded-2xl shadow-[8px_8px_0px_0px_rgba(30,41,59,1)] p-4 md:p-8 flex flex-col gap-6", p.color)} style={{ filter: "url(#squiggle)" }}>
                             <div className="flex-1 border-2 border-dashed border-slate-400 rounded-xl overflow-hidden bg-white/50">
                                 {p.useImage ? (
                                     <img 
@@ -274,17 +463,19 @@ export function SketchbookShowcase() {
                                     </div>
                                 )}
                             </div>
-                            <div className="flex justify-between items-end">
+                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
                                 <div>
                                     <span className="font-mono text-xs uppercase text-slate-400">{p.tag}</span>
-                                    <h3 className="text-4xl font-black text-slate-900">{p.title}</h3>
+                                    <h3 className="text-2xl md:text-4xl font-black text-slate-900 font-heading">{p.title}</h3>
                                     {p.subtitle && (
-                                        <p className="text-sm text-slate-600 mt-1">{p.subtitle}</p>
+                                        <p className="text-sm text-slate-600 mt-1 font-sans">{p.subtitle}</p>
                                     )}
                                 </div>
-                                <SketchButton className="bg-white">
-                                    {p.buttonText ?? "View Demo"}
-                                </SketchButton>
+                                <Link to={p.link} className="w-full sm:w-auto">
+                                    <SketchButton className="bg-white w-full sm:w-auto">
+                                        {p.buttonText ?? "View Demo"}
+                                    </SketchButton>
+                                </Link>
                             </div>
                         </div>
                     </div>
@@ -347,7 +538,7 @@ export function ProcessPath() {
     ];
 
     return (
-        <section ref={container} className="py-48 px-4 bg-white relative">
+        <section id="process" ref={container} className="py-48 px-4 bg-white relative">
             <div className="mx-auto max-w-4xl relative">
                 <svg className="absolute left-[50px] top-0 h-full w-[100px] overflow-visible pointer-events-none" viewBox="0 0 100 1000" preserveAspectRatio="none">
                     <path 
@@ -369,12 +560,12 @@ export function ProcessPath() {
                             transition={{ duration: 0.5 }}
                             className="flex items-center gap-12 group"
                         >
-                            <div className="h-28 w-28 rounded-full border-4 border-slate-900 bg-white flex items-center justify-center group-hover:bg-yellow-300 transition-colors shadow-xl" style={{ filter: "url(#squiggle)" }}>
+                            <div className="h-28 w-28 rounded-full border-4 border-slate-900 bg-white flex items-center justify-center group-hover:bg-yellow-300 transition-colors shadow-[4px_4px_0px_0px_rgba(30,41,59,1)]" style={{ filter: "url(#squiggle)" }}>
                                 {React.cloneElement(s.icon as React.ReactElement<any>, { size: 40 })}
                             </div>
-                            <div className="p-8 border-2 border-slate-900 rounded-2xl bg-white shadow-lg flex-1" style={{ filter: "url(#squiggle)" }}>
-                                <h3 className="text-3xl font-black text-slate-900 mb-2">{s.title}</h3>
-                                <p className="text-slate-500 font-medium">{s.description}</p>
+                            <div className="p-8 border-2 border-slate-900 rounded-2xl bg-white shadow-[6px_6px_0px_0px_rgba(30,41,59,1)] flex-1" style={{ filter: "url(#squiggle)" }}>
+                                <h3 className="text-3xl font-black text-slate-900 mb-2 font-heading">{s.title}</h3>
+                                <p className="text-slate-500 font-medium font-sans">{s.description}</p>
                             </div>
                         </motion.div>
                     ))}
@@ -384,37 +575,90 @@ export function ProcessPath() {
     );
 }
 
-// --- 8. Client Scribbles (Masonry Testimonials) ---
-export function ClientScribbles() {
+// --- 8. Whiteboard Stats Component (Replaces ClientScribbles) ---
+export function WhiteboardStats() {
     return (
-        <section id="customers" className="py-32 bg-[#f8fafc] border-y-2 border-slate-900">
-            <div className="mx-auto max-w-7xl px-4">
+        <section id="stats" className="py-32 bg-[#fdfbf7] border-y-2 border-slate-900 relative">
+            <div className="mx-auto max-w-7xl px-6">
                 <div className="text-center mb-24">
-                    <h2 className="text-5xl font-black text-slate-900 italic">Trusted by Talent Teams</h2>
-                    <div className="h-1 w-24 bg-red-400 mx-auto mt-4" style={{ filter: "url(#squiggle)" }} />
+                    <span className="font-mono text-xs uppercase tracking-widest text-red-500 font-bold bg-red-50 border border-red-200 px-3 py-1 rounded-full">
+                        AI Reasoning Engine
+                    </span>
+                    <h2 className="text-5xl md:text-6xl font-black text-slate-900 mt-4">
+                        The Agentic <span className="text-blue-600 italic">Evaluation Matrix</span>
+                    </h2>
+                    <div className="h-1.5 w-32 bg-yellow-400 mx-auto mt-4 rounded-full" style={{ filter: "url(#squiggle)" }} />
                 </div>
-                <div className="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {[
-                        { text: "We cut screening time by half and still made better hires.", author: "Avery, Recruiting Lead", color: "bg-blue-100" },
-                        { text: "The AI match engine keeps our pipeline full of qualified candidates.", author: "Jordan, Talent Partner", color: "bg-yellow-100" },
-                        { text: "Our offer acceptance rate improved after we centralized interview feedback.", author: "Morgan, People Ops", color: "bg-pink-100" },
-                        { text: "The platform gives our team confidence and keeps hiring moving.", author: "Taylor, Head of Recruitment", color: "bg-green-100" },
-                        { text: "Hiring finally feels efficient, visible, and human-driven.", author: "Chris, HR Director", color: "bg-indigo-100" }
-                    ].map((t, i) => (
+                        { 
+                            num: "01", 
+                            label: "Resume Matcher", 
+                            color: "bg-blue-100", 
+                            desc: "Calculates an objective 0-100% ATS score using semantic similarity matching against job descriptions.",
+                            status: "Active",
+                            model: "MiniLM-L6",
+                            icon: <Shapes className="h-5 w-5 text-blue-700" />
+                        },
+                        { 
+                            num: "02", 
+                            label: "Qualitative Evaluator", 
+                            color: "bg-yellow-100", 
+                            desc: "Extracts key candidate strengths, soft/hard skill gaps, and prepares custom technical probe areas.",
+                            status: "Active",
+                            model: "Qwen 2.5",
+                            icon: <Layout className="h-5 w-5 text-yellow-700" />
+                        },
+                        { 
+                            num: "03", 
+                            label: "Question Generator", 
+                            color: "bg-pink-100", 
+                            desc: "Generates tailored technical, behavioral, and scenario interview questions specific to candidate deficits.",
+                            status: "Active",
+                            model: "Gemma 3",
+                            icon: <PenTool className="h-5 w-5 text-pink-700" />
+                        },
+                        { 
+                            num: "04", 
+                            label: "Dynamic Assessor", 
+                            color: "bg-green-100", 
+                            desc: "Creates customized coding challenges (DSA) and technical MCQs tailored to the candidate's exact tech stack.",
+                            status: "Active",
+                            model: "Gemma 3",
+                            icon: <Zap className="h-5 w-5 text-green-700" />
+                        }
+                    ].map((stat, i) => (
                         <motion.div 
                             key={i}
-                            initial={{ opacity: 0, y: 50 }}
+                            initial={{ opacity: 0, y: 30 }}
                             whileInView={{ opacity: 1, y: 0 }}
-                            className={cn("break-inside-avoid p-8 border-2 border-slate-900 rounded-3xl shadow-lg relative h-auto inline-block w-full text-slate-900", t.color)}
+                            viewport={{ once: true }}
+                            transition={{ delay: i * 0.1 }}
+                            className={cn("p-8 border-2 border-slate-900 rounded-3xl shadow-[6px_6px_0px_0px_rgba(30,41,59,1)] hover:shadow-[10px_10px_0px_0px_rgba(30,41,59,1)] transition-all duration-300 relative flex flex-col justify-between min-h-[280px]", stat.color)}
                             style={{ filter: "url(#squiggle)" }}
                         >
-                            <MessageCircle className="absolute -top-4 -right-4 h-10 w-10 text-slate-900 bg-white rounded-full p-2 border-2 border-slate-900" />
-                            <p className="font-handwriting text-2xl mb-6 text-slate-800 leading-relaxed">"{t.text}"</p>
-                            <div className="flex items-center gap-4">
-                                <div className="h-12 w-12 rounded-full border-2 border-slate-900 bg-white flex items-center justify-center">
-                                    <User size={20} />
+                            {/* Tape Decoration */}
+                            <div className="absolute -top-3.5 left-12 h-7 w-20 bg-white/60 shadow-sm border border-slate-300 -rotate-1 rounded-sm" />
+
+                            <div>
+                                <div className="flex justify-between items-start mb-6 mt-2">
+                                    <div className="h-9 w-9 rounded-full border-2 border-slate-900 bg-white flex items-center justify-center shadow-[2px_2px_0px_0px_#000]">
+                                        {stat.icon}
+                                    </div>
+                                    <span className="text-xs font-black font-mono border-2 border-slate-950 px-2 py-0.5 rounded-lg bg-white shadow-[2px_2px_0px_0px_#000]">
+                                        Agent {stat.num}
+                                    </span>
                                 </div>
-                                <span className="font-black text-slate-900 uppercase tracking-widest text-xs">— {t.author}</span>
+                                <h3 className="font-bold text-2xl text-slate-900 mb-3 font-heading leading-tight">{stat.label}</h3>
+                                <p className="text-slate-600 font-medium text-xs leading-relaxed font-sans">{stat.desc}</p>
+                            </div>
+                            <div className="mt-6 pt-4 border-t border-dashed border-slate-900/10 flex items-center justify-between font-mono text-[9px] uppercase font-bold text-slate-500">
+                                <span className="flex items-center gap-1">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
+                                    {stat.status}
+                                </span>
+                                <span className="bg-white/80 px-1.5 py-0.5 border border-slate-300 rounded">{stat.model}</span>
                             </div>
                         </motion.div>
                     ))}
@@ -424,92 +668,74 @@ export function ClientScribbles() {
     );
 }
 
-// --- 9. Rough Pricing (Scribble Cards) ---
-export function PricingDrafts() {
-    return (
-        <section id="pricing" className="py-48 px-4 bg-white">
-            <div className="mx-auto max-w-6xl">
-                <div className="text-center mb-24">
-                    <span className="font-mono text-blue-600 font-bold uppercase tracking-widest bg-blue-50 px-3 py-1 rounded">Plans for teams</span>
-                    <h2 className="text-6xl font-black text-slate-900 mt-4">Staff smarter with <span className="text-red-500 underline decoration-wavy">AI</span></h2>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-                    {[
-                        { title: "Starter", price: "$0", features: ["Single pipeline", "Basic AI suggestions", "Email support"] },
-                        { title: "Growth", price: "$49", features: ["Unlimited jobs", "Candidate scoring", "Team collaboration"] },
-                        { title: "Enterprise", price: "$199", features: ["Dedicated onboarding", "Custom workflows", "Priority support"] }
-                    ].map((p, i) => (
-                        <motion.div 
-                            key={i}
-                            whileHover={{ y: -10 }}
-                            className="bg-white border-4 border-slate-900 rounded-[40px] p-12 shadow-2xl relative overflow-hidden group text-slate-900"
-                            style={{ filter: "url(#squiggle)" }}
-                        >
-                            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-100 transition-opacity">
-                                <Star size={40} className="text-yellow-400 group-hover:rotate-45 transition-transform duration-500" />
-                            </div>
-                            <h3 className="text-2xl font-black text-slate-400 uppercase tracking-widest mb-4">{p.title}</h3>
-                            <div className="flex items-baseline gap-2 mb-10">
-                                <span className="text-6xl font-black text-slate-900">{p.price}</span>
-                                <span className="font-mono text-slate-400">/mo</span>
-                            </div>
-                            <ul className="space-y-6 mb-12">
-                                {p.features.map((f, j) => (
-                                    <li key={j} className="flex items-center gap-3 font-bold text-slate-600">
-                                        <div className="h-2 w-2 rounded-full bg-slate-900" />
-                                        {f}
-                                    </li>
-                                ))}
-                            </ul>
-                            <SketchButton className="w-full bg-slate-900 text-white hover:text-slate-900">Choose Plan</SketchButton>
-                        </motion.div>
-                    ))}
-                </div>
-            </div>
-        </section>
-    );
-}
-
-// --- 10. Blueprint Footer ---
 export function BlueprintFooter() {
     return (
-        <footer className="bg-slate-900 pt-48 pb-20 px-4 text-[#fdfbf7] relative overflow-hidden">
+        <footer className="bg-slate-950 pt-28 pb-16 px-6 text-slate-100 relative overflow-hidden border-t-2 border-slate-900">
+            {/* Subtle paper grid background opacity */}
             <div className="absolute inset-0 opacity-5 pointer-events-none" style={{ backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
+            
             <div className="mx-auto max-w-7xl relative z-10">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-32 mb-32">
-                    <div>
-                        <h2 className="text-[10vw] lg:text-[7vw] font-black leading-none uppercase mb-8 italic">
-                            Let's <br /> <span className="text-yellow-300">Hire</span>.
-                        </h2>
-                        <p className="text-2xl font-medium text-slate-400 max-w-md">
-                            Build better teams faster with AI-powered screening, collaboration, and offer execution.
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 mb-20">
+                    {/* Brand Info (5 cols) */}
+                    <div className="lg:col-span-5 space-y-6">
+                        <Link to="/" className="text-3xl md:text-4xl font-black tracking-tight text-white flex items-center gap-2.5">
+                            <span className="bg-yellow-300 border-2 border-slate-900 p-1.5 rounded-lg text-lg shadow-[2px_2px_0px_0px_#000]">💼</span>
+                            TalentIQ
+                        </Link>
+                        <p className="text-sm font-medium text-slate-450 max-w-sm font-sans leading-relaxed">
+                            Empowering developers and recruitment teams with local, RAG-powered resume screening, conversational AI mock interviews, and automated technical sandboxes.
                         </p>
+                        
+                        {/* Operational badge */}
+                        <div className="inline-flex items-center gap-2 bg-slate-900 border border-slate-800 px-3.5 py-1.5 rounded-full text-xs font-mono font-bold text-slate-300">
+                            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                            System Status: Operational
+                        </div>
                     </div>
-                    <div className="flex flex-col justify-end items-end gap-12">
-                        <div className="grid grid-cols-2 gap-12 text-sm font-mono uppercase tracking-widest">
-                            <ul className="space-y-4">
-                                <li className="text-slate-500">Navigation</li>
-                                <li><a href="#" className="hover:text-yellow-300">Home</a></li>
-                                <li><a href="#" className="hover:text-yellow-300">Archive</a></li>
-                                <li><a href="#" className="hover:text-yellow-300">Process</a></li>
-                            </ul>
-                            <ul className="space-y-4">
-                                <li className="text-slate-500">Social</li>
-                                <li><a href="#" className="hover:text-yellow-300">Twitter</a></li>
-                                <li><a href="#" className="hover:text-yellow-300">Instagram</a></li>
-                                <li><a href="#" className="hover:text-yellow-300">Dribbble</a></li>
+
+                    {/* Navigation Columns (7 cols) */}
+                    <div className="lg:col-span-7 grid grid-cols-2 md:grid-cols-3 gap-10">
+                        {/* Col 1 */}
+                        <div className="space-y-4">
+                            <h4 className="font-mono text-[10px] uppercase font-bold tracking-widest text-slate-500">Platform</h4>
+                            <ul className="space-y-2.5 text-sm font-medium text-slate-400 font-sans">
+                                <li><a href="#platform" className="hover:text-yellow-300 transition-colors">Features</a></li>
+                                <li><a href="#showcase" className="hover:text-yellow-300 transition-colors">Showcase</a></li>
+                                <li><a href="#process" className="hover:text-yellow-300 transition-colors">Process</a></li>
+                                <li><a href="#stats" className="hover:text-yellow-300 transition-colors">Metrics</a></li>
                             </ul>
                         </div>
-                        <div className="h-32 w-full max-w-sm border-2 border-dashed border-slate-700 rounded-xl flex items-center justify-center p-8 text-center text-xs font-mono opacity-40">
-                            Coordinate System Enabled: <br /> 0.0000N / 0.0000W
+
+                        {/* Col 2 */}
+                        <div className="space-y-4">
+                            <h4 className="font-mono text-[10px] uppercase font-bold tracking-widest text-slate-500">Capabilities</h4>
+                            <ul className="space-y-2.5 text-sm font-medium text-slate-400 font-sans">
+                                <li><Link to="/resumes" className="hover:text-yellow-300 transition-colors">ATS Analyzer</Link></li>
+                                <li><Link to="/screening" className="hover:text-yellow-300 transition-colors">Mock Interviews</Link></li>
+                                <li><Link to="/individual/assessment" className="hover:text-yellow-300 transition-colors">Skill Testing</Link></li>
+                                <li><a href="#stats" className="hover:text-yellow-300 transition-colors">Agent Matrix</a></li>
+                            </ul>
+                        </div>
+
+                        {/* Col 3 */}
+                        <div className="space-y-4 col-span-2 md:col-span-1">
+                            <h4 className="font-mono text-[10px] uppercase font-bold tracking-widest text-slate-500">Community</h4>
+                            <ul className="space-y-2.5 text-sm font-medium text-slate-400 font-sans">
+                                <li><a href="#" className="hover:text-yellow-300 transition-colors">GitHub Repository</a></li>
+                                <li><a href="#" className="hover:text-yellow-300 transition-colors">Documentation</a></li>
+                                <li><a href="#" className="hover:text-yellow-300 transition-colors">API Reference</a></li>
+                            </ul>
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col md:flex-row justify-between items-center pt-16 border-t border-slate-800 font-mono text-xs uppercase tracking-[0.3em] text-slate-500 gap-8">
-                    <span>© 2026 TalentIQ AI</span>
-                    <div className="flex gap-12">
-                        <span>Legal / Terms</span>
-                        <span>Privacy Policy</span>
+
+                {/* Bottom line */}
+                <div className="pt-10 border-t border-slate-900 flex flex-col sm:flex-row justify-between items-center gap-6 font-mono text-[10px] uppercase font-bold tracking-wider text-slate-500">
+                    <span>© 2026 TalentIQ. Local Agent Inference Active.</span>
+                    <div className="flex gap-8">
+                        <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+                        <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+                        <a href="#" className="hover:text-white transition-colors">Security</a>
                     </div>
                 </div>
             </div>
@@ -520,7 +746,7 @@ export function BlueprintFooter() {
 // --- 11. Marquee (Handwritten Tape) ---
 export function TapeMarquee() {
     return (
-        <div className="relative -rotate-2 bg-slate-900 py-6 overflow-hidden shadow-xl" style={{ filter: "url(#squiggle)" }}>
+        <div className="relative bg-slate-900 py-6 overflow-hidden shadow-xl" style={{ filter: "url(#squiggle)" }}>
             <motion.div
                 animate={{ x: ["0%", "-50%"] }}
                 transition={{ duration: 20, ease: "linear", repeat: Infinity }}
@@ -542,7 +768,7 @@ export function TapeMarquee() {
 export function SketchyLanding() {
     return (
         <div
-            className="relative min-h-screen overflow-hidden bg-[#f8efe2] text-slate-900"
+            className="relative min-h-screen overflow-hidden bg-[#f8efe2] text-slate-900 font-sans"
             style={{
                 backgroundImage: `linear-gradient(rgba(248,239,226,0.92), rgba(237,222,205,0.92)), url(${heroBg})`,
                 backgroundSize: "cover",
@@ -553,26 +779,37 @@ export function SketchyLanding() {
             <SquiggleFilter />
             <GraphPaper />
             <div className="relative z-10">
-                <nav className="absolute inset-x-0 top-0 z-20 mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
-                    <Link to="/" className="text-lg font-black tracking-tight text-slate-900">
-                        TalentIQ
-                    </Link>
-                    <div className="hidden items-center gap-8 md:flex text-sm text-slate-700">
-                        <a href="#platform" className="transition hover:text-slate-900">Platform</a>
-                        <a href="#customers" className="transition hover:text-slate-900">Customers</a>
-                    </div>
-                    <Link
-                        to="/login"
-                        className="rounded-full border border-slate-900 bg-slate-900 px-6 py-2 text-sm font-semibold text-white shadow-lg shadow-slate-900/10 transition hover:bg-slate-800"
-                    >
-                        Login
-                    </Link>
-                </nav>
+                {/* Floating sticky neobrutalist navbar */}
+                <header className="sticky top-4 z-50 px-4 max-w-7xl mx-auto w-full">
+                    <nav className="flex items-center justify-between px-6 py-3 border-2 border-slate-900 bg-white/95 backdrop-blur-md rounded-2xl shadow-[4px_4px_0px_0px_#1e293b] mt-4 transition-all duration-300">
+                        <Link to="/" className="text-xl font-black tracking-tight text-slate-900 flex items-center gap-2">
+                            <span className="bg-yellow-300 border-2 border-slate-900 p-1.5 rounded-lg text-sm">💼</span>
+                            TalentIQ
+                        </Link>
+                        <div className="hidden items-center gap-8 md:flex text-xs uppercase tracking-wider font-bold text-slate-700 font-mono">
+                            <a href="#platform" className="hover:text-blue-600 transition-colors">Features</a>
+                            <a href="#showcase" className="hover:text-blue-600 transition-colors">Showcase</a>
+                            <a href="#process" className="hover:text-blue-600 transition-colors">Process</a>
+                            <a href="#stats" className="hover:text-blue-600 transition-colors">Metrics</a>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <Link to="/login" className="text-sm font-bold text-slate-700 hover:text-slate-900">
+                                Login
+                            </Link>
+                            <Link to="/signup">
+                                <button className="px-4 py-2 font-bold text-slate-900 bg-yellow-300 hover:bg-yellow-400 border-2 border-slate-900 rounded-xl shadow-[3px_3px_0px_0px_rgba(30,41,59,1)] hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_0px_rgba(30,41,59,1)] transition-all duration-100 text-[10px] uppercase tracking-wider cursor-pointer">
+                                    Get Started
+                                </button>
+                            </Link>
+                        </div>
+                    </nav>
+                </header>
+
                 <Hero />
                 <FeatureBoard />
                 <SketchbookShowcase />
                 <ProcessPath />
-                <ClientScribbles />
+                <WhiteboardStats />
                 <BlueprintFooter />
                 <TapeMarquee />
             </div>

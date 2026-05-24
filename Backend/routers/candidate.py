@@ -678,6 +678,7 @@ async def analyze_resume_endpoint(
             db.commit()
             db.refresh(user)
 
+        success = True
         return {
             "status": "success",
             "resume_id": resume_obj.id,
