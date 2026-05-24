@@ -1,0 +1,19 @@
+# Python
+venv/
+Backend/venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Node
+node_modules/
+
+# Environment
+.env
+
+# Databases
+.chroma_db/
+
+# Build
+dist/
+build/

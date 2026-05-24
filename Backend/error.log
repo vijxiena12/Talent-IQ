@@ -1,0 +1,24 @@
+Traceback (most recent call last):
+  File "c:\Users\vijxi\OneDrive\Desktop\pbl project\Backend\routers\candidate.py", line 389, in analyze_resume_endpoint
+    chunks = extract_resume(tmp_path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\vijxi\OneDrive\Desktop\pbl project\Backend\extractor.py", line 138, in extract_resume
+    raw_text = extract_text_from_pdf(pdf_path)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\vijxi\OneDrive\Desktop\pbl project\Backend\extractor.py", line 75, in extract_text_from_pdf
+    page_text = page.extract_text()
+                ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\vijxi\OneDrive\Desktop\pbl project\Backend\venv\Lib\site-packages\PyPDF2\_page.py", line 1851, in extract_text
+    return self._extract_text(
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\vijxi\OneDrive\Desktop\pbl project\Backend\venv\Lib\site-packages\PyPDF2\_page.py", line 1356, in _extract_text
+    content = ContentStream(content, pdf, "bytes")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\vijxi\OneDrive\Desktop\pbl project\Backend\venv\Lib\site-packages\PyPDF2\generic\_data_structures.py", line 877, in __init__
+    self.__parse_content_stream(stream_bytes)
+  File "C:\Users\vijxi\OneDrive\Desktop\pbl project\Backend\venv\Lib\site-packages\PyPDF2\generic\_data_structures.py", line 943, in __parse_content_stream
+    operands.append(read_object(stream, None, self.forced_encoding))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\vijxi\OneDrive\Desktop\pbl project\Backend\venv\Lib\site-packages\PyPDF2\generic\_data_structures.py", line 1080, in read_object
+    raise PdfReadError(
+PyPDF2.errors.PdfReadError: Invalid Elementary Object starting with b'|' @10: b'\nvijxiena@gmail.com | Khanna, Punjab, India | +91 9877100209\nSUMMARY\nArtificial '
