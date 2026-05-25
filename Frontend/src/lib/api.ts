@@ -33,6 +33,9 @@ export const api = axios.create({
 // Request interceptor to inject Authorization token dynamically
 api.interceptors.request.use((config) => {
   try {
+    // Bypass ngrok browser warning page for API calls
+    config.headers["ngrok-skip-browser-warning"] = "true";
+
     const stored = localStorage.getItem("user");
     if (stored) {
       const parsed = JSON.parse(stored);

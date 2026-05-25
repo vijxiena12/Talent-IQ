@@ -46,7 +46,8 @@ app.add_middleware(
         "http://127.0.0.1:5175",
         "http://localhost:3000",
         "https://smart-hire-8ysf.vercel.app",
-        "https://talentiq-moksh.vercel.app"
+        "https://talentiq-moksh.vercel.app",
+        "https://talent-iq-virid-two.vercel.app"
     ],
     allow_origin_regex="https://.*\\.vercel\\.app",
     allow_credentials=True,
