@@ -174,6 +174,20 @@ export default function RecruiterDashboard() {
     }
   }
 
+  const handleDownloadResume = async () => {
+    if (!selectedCandidate) return
+    try {
+      const response = await api.get(`/recruiter/resume/${selectedCandidate.id}/download`, { responseType: "blob" })
+      const contentType = response.headers["content-type"] || "application/pdf"
+      const file = new Blob([response.data], { type: contentType })
+      const fileURL = URL.createObjectURL(file)
+      window.open(fileURL, "_blank")
+    } catch (err) {
+      console.error("Error downloading resume:", err)
+      alert("Failed to download the resume. Please check the backend connection.")
+    }
+  }
+
   const sortedCandidates = [...candidates].sort((a, b) => b.ats_score - a.ats_score)
 
   return (
@@ -470,9 +484,13 @@ export default function RecruiterDashboard() {
                             <CheckCircle2 className="w-5 h-5" />
                             Invite to Interview
                          </Button>
-                         <Button variant="outline" className="w-full h-14 border-2 border-slate-900 font-bold rounded-2xl bg-white shadow-[3px_3px_0px_0px_#000] hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_0px_#000] transition-all cursor-pointer">
-                            Download Resume (PDF)
-                         </Button>
+                         <Button 
+                            variant="outline" 
+                            onClick={handleDownloadResume}
+                            className="w-full h-14 border-2 border-slate-900 font-bold rounded-2xl bg-white shadow-[3px_3px_0px_0px_#000] hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_0px_#000] transition-all cursor-pointer"
+                          >
+                             Download Resume (PDF)
+                          </Button>
                       </div>
                     </div>
                   </div>

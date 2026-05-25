@@ -90,6 +90,26 @@ export default function Profile() {
     }
   }
 
+  const handleDownloadResume = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
+    if (!profile.resume_url) return
+    
+    const url = profile.resume_url.startsWith("http") 
+      ? profile.resume_url 
+      : `${API_BASE.replace(/\/api$/, "")}${profile.resume_url}`
+      
+    try {
+      const response = await api.get(url, { responseType: "blob" })
+      const contentType = response.headers["content-type"] || "application/pdf"
+      const file = new Blob([response.data], { type: contentType })
+      const fileURL = URL.createObjectURL(file)
+      window.open(fileURL, "_blank")
+    } catch (err) {
+      console.error("Error downloading resume:", err)
+      alert("Failed to view the resume. Please check the backend connection.")
+    }
+  }
+
   useEffect(() => {
     const userStr = localStorage.getItem("user")
     if (userStr) {
@@ -191,9 +211,8 @@ export default function Profile() {
                   <h2 className="text-sm uppercase tracking-[0.35em] text-slate-400 font-bold">Resume Link</h2>
                   {profile.resume_url ? (
                     <a 
-                      href={profile.resume_url.startsWith("http") ? profile.resume_url : `${API_BASE.replace(/\/api$/, "")}${profile.resume_url}`} 
-                      target="_blank" 
-                      rel="noreferrer" 
+                      href="#"
+                      onClick={handleDownloadResume} 
                       className="inline-flex items-center gap-2 text-slate-900 font-semibold underline"
                     >
                       <ExternalLink className="w-4 h-4" />
