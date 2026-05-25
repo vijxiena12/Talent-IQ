@@ -29,28 +29,55 @@ try:
     exec_globals = {}
     exec(code, exec_globals)
     
+    user_funcs = [v for k, v in exec_globals.items() if callable(v) and not k.startswith('__')]
+    
+    if not user_funcs:
+        raise ValueError('No function defined in code. Please define a function (e.g. def solution(...)).')
+        
+    target_func = user_funcs[0]
+    
     for i, tc in enumerate(test_cases):
         input_val = tc.get('input', '')
         expected = tc.get('expected', '')
         
-        if 'main' in exec_globals:
-            actual = str(exec_globals['main'](input_val))
-        else:
-            # Fallback to look for a function named the same as input or generic
-            actual = ''
+        args = []
+        if input_val != '':
+            try:
+                parsed = json.loads(input_val)
+                if isinstance(parsed, list):
+                    args = parsed
+                else:
+                    args = [parsed]
+            except:
+                if isinstance(input_val, str):
+                    args = [x.strip() for x in input_val.split(',')]
+                else:
+                    args = [input_val]
         
-        passed = str(actual).strip() == str(expected).strip()
-        if not passed:
+        try:
+            output = target_func(*args)
+            actual = str(output)
+            passed = str(actual).strip().lower() == str(expected).strip().lower()
+            if not passed:
+                all_passed = False
+            
+            results.append({
+                'test': i + 1,
+                'input': input_val,
+                'expected': str(expected),
+                'actual': actual,
+                'passed': passed
+            })
+        except Exception as run_err:
             all_passed = False
-        
-        results.append({
-            'test': i + 1,
-            'input': input_val,
-            'expected': str(expected),
-            'actual': actual,
-            'passed': passed
-        })
-    
+            results.append({
+                'test': i + 1,
+                'input': input_val,
+                'expected': str(expected),
+                'actual': f'Runtime Error: {str(run_err)}',
+                'passed': False
+            })
+            
     print(json.dumps({'success': True, 'output': 'Executed', 'test_results': results, 'all_passed': all_passed}))
 
 except Exception as e:

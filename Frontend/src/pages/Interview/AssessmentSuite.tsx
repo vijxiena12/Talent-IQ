@@ -441,8 +441,9 @@ function InterviewStep({ sessionId, data, onComplete }: { sessionId: string, dat
 // --- STEP 4: SKILLS ASSESSMENT ---
 function TestStep({ sessionId, data, resumeId, interviewAnswers, onComplete }: { sessionId: string, data: any, resumeId: number | null, interviewAnswers: any[], onComplete: () => void }) {
   const [answers, setAnswers] = useState<Record<number, string>>({} as Record<number, string>)
+  const [language, setLanguage] = useState(data.assessment?.dsa?.language || "python")
   const [codeSolution, setCodeSolution] = useState("")
-  const [language, setLanguage] = useState("python")
+  const [solutions, setSolutions] = useState<Record<string, string>>({})
   const [codeOutput, setCodeOutput] = useState<any>(null)
   const [codeLoading, setCodeLoading] = useState(false)
   const [isFinalizing, setIsFinalizing] = useState(false)
@@ -450,13 +451,27 @@ function TestStep({ sessionId, data, resumeId, interviewAnswers, onComplete }: {
   const assessment = data.assessment
   if (!assessment) return <div className="text-center p-12">No assessment data found.</div>
 
+  useEffect(() => {
+    if (assessment.dsa) {
+      const base = language === "cpp" 
+        ? (assessment.dsa.cpp_base_code || assessment.dsa.base_code || "")
+        : (assessment.dsa.python_base_code || assessment.dsa.base_code || "");
+      setCodeSolution(solutions[language] !== undefined ? solutions[language] : base);
+    }
+  }, [language, assessment.dsa])
+
+  const handleCodeChange = (val: string) => {
+    setCodeSolution(val)
+    setSolutions(prev => ({ ...prev, [language]: val }))
+  }
+
   const runCode = async () => {
     setCodeLoading(true)
     try {
       const res = await api.post(`/code/execute`, {
         code: codeSolution,
         language: language,
-        test_cases: [{ input: "", expected: "" }]
+        test_cases: assessment.dsa?.test_cases || [{ input: "", expected: "" }]
       })
       setCodeOutput(res.data)
     } catch (err: any) {
@@ -593,9 +608,10 @@ function TestStep({ sessionId, data, resumeId, interviewAnswers, onComplete }: {
                 <Badge className="bg-red-500 text-white font-bold px-4 py-1">{assessment.dsa.title}</Badge>
                 <Code2 className="w-6 h-6 text-slate-700" />
               </div>
-              <p className="text-slate-400 font-medium leading-relaxed text-lg">{assessment.dsa.description}</p>
-              <div className="bg-black/50 p-6 rounded-2xl font-mono text-sm text-red-300 border border-white/5">
-                {assessment.dsa.base_code}
+              <div className="bg-black/50 p-6 rounded-2xl font-mono text-sm text-red-300 border border-white/5 whitespace-pre-wrap">
+                {language === "cpp"
+                  ? (assessment.dsa.cpp_base_code || assessment.dsa.base_code)
+                  : (assessment.dsa.python_base_code || assessment.dsa.base_code)}
               </div>
             </div>
           </Card>
@@ -606,8 +622,8 @@ function TestStep({ sessionId, data, resumeId, interviewAnswers, onComplete }: {
                 height="400px"
                 language={language === "cpp" ? "cpp" : "python"}
                 theme="vs-dark"
-                value={codeSolution || assessment.dsa.base_code}
-                onChange={(value) => setCodeSolution(value || "")}
+                value={codeSolution}
+                onChange={(value) => handleCodeChange(value || "")}
                 options={{
                   minimap: { enabled: false },
                   fontSize: 16,
@@ -628,17 +644,39 @@ function TestStep({ sessionId, data, resumeId, interviewAnswers, onComplete }: {
               <Button 
                 variant="outline"
                 className="h-16 px-8 rounded-2xl border-2 font-bold"
-                onClick={() => setCodeSolution(assessment.dsa.base_code || "")}
+                onClick={() => {
+                  const base = language === "cpp"
+                    ? (assessment.dsa.cpp_base_code || assessment.dsa.base_code || "")
+                    : (assessment.dsa.python_base_code || assessment.dsa.base_code || "");
+                  handleCodeChange(base);
+                }}
               >
                 <RotateCcw className="w-5 h-5" />
               </Button>
             </div>
             {codeOutput && (
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-                <Card className={`p-6 rounded-3xl ${codeOutput.success ? "bg-emerald-50 border-emerald-200" : "bg-rose-50 border-rose-200"} border-2`}>
-                  <p className={`font-bold ${codeOutput.success ? "text-emerald-700" : "text-rose-700"}`}>
-                    {codeOutput.success ? "✓ All test cases passed!" : `✕ Error: ${codeOutput.error}`}
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+                <Card className={`p-6 rounded-3xl ${codeOutput.success && codeOutput.all_passed ? "bg-emerald-50 border-emerald-200" : "bg-rose-50 border-rose-200"} border-2`}>
+                  <p className={`font-bold ${codeOutput.success && codeOutput.all_passed ? "text-emerald-700" : "text-rose-700"}`}>
+                    {codeOutput.success && codeOutput.all_passed 
+                      ? "✓ All test cases passed!" 
+                      : codeOutput.success 
+                        ? "✕ Some test cases failed." 
+                        : `✕ Error: ${codeOutput.error}`}
                   </p>
+                  
+                  {codeOutput.test_results && codeOutput.test_results.length > 0 && (
+                    <div className="mt-4 space-y-2 font-mono text-xs">
+                      {codeOutput.test_results.map((tr: any, idx: number) => (
+                        <div key={idx} className={`p-3 rounded-xl border flex items-center justify-between ${tr.passed ? "bg-emerald-100/30 border-emerald-200 text-emerald-800" : "bg-rose-100/30 border-rose-200 text-rose-800"}`}>
+                          <div>
+                            <span className="font-bold">Test #{idx + 1}:</span> Input: <code>{tr.input}</code> | Expected: <code>{tr.expected}</code> | Actual: <code>{tr.actual}</code>
+                          </div>
+                          <span className="font-bold">{tr.passed ? "PASSED" : "FAILED"}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </Card>
               </motion.div>
             )}

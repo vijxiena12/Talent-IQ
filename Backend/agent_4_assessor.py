@@ -50,15 +50,23 @@ Strictly return ONLY valid JSON in this format:
   ],
   "dsa": {{
     "title": "A coding challenge related to the role",
-    "description": "Problem statement for {target_lang}",
+    "description": "Problem statement for both Python and C++",
     "constraints": ["Time complexity requirement"],
-    "base_code": "The initial {target_lang} function signature",
+    "base_code": "The default starter function signature (in Python)",
+    "python_base_code": "Python starter code template (e.g. def solution(...):)",
+    "cpp_base_code": "C++ starter code template (e.g. class Solution { ... })",
     "language": "{target_lang.lower()}",
-    "solution_logic": "Pseudocode explanation of the optimal approach"
+    "solution_logic": "Pseudocode explanation of the optimal approach",
+    "test_cases": [
+      {{
+        "input": "arg1, arg2 or JSON array representing arguments, e.g. '[[2, 7, 11], 9]'",
+        "expected": "expected output representation, e.g. '[0, 1]'"
+      }}
+    ]
   }}
 }}
 
-Generate exactly 3 MCQs (2 technical, 1 behavioral) and 1 DSA coding question.
+Generate exactly 3 MCQs (2 technical, 1 behavioral) and 1 DSA coding question with exactly 3 test cases.
 """
 
 def generate_assessment(ats_result: ATSResult) -> AssessmentData:
@@ -79,6 +87,12 @@ def generate_assessment(ats_result: ATSResult) -> AssessmentData:
         mcqs = [MCQQuestion(**q) for q in data.get("mcqs", [])]
         dsa = DSAQuestion(**data.get("dsa", {}))
         
+        # Ensure default base_code is fallback if python_base_code or cpp_base_code are missing from output
+        if not dsa.python_base_code:
+            dsa.python_base_code = dsa.base_code
+        if not dsa.cpp_base_code:
+            dsa.cpp_base_code = dsa.base_code
+            
         return AssessmentData(mcqs=mcqs, dsa=dsa)
     except Exception as e:
         logger.warning(f"Parsing failed: {e}. Using fallback assessment.")
@@ -95,11 +109,18 @@ def generate_assessment(ats_result: ATSResult) -> AssessmentData:
                             correct_idx=1, explanation="Collaboration requires empathy and listening.")
             ],
             dsa=DSAQuestion(
-                title="Reverse a String (In-place)",
-                description="Write a function that reverses a string in-place without using extra memory.",
-                constraints=["O(1) extra space", "O(N) time complexity"],
-                base_code="def reverse_string(s: list[str]) -> None:",
+                title="Two Sum",
+                description="Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.",
+                constraints=["O(N) time complexity", "O(N) space complexity"],
+                base_code="def two_sum(nums: list[int], target: int) -> list[int]:",
+                python_base_code="def two_sum(nums: list[int], target: int) -> list[int]:\n    # Your code here\n    pass",
+                cpp_base_code="#include <vector>\nusing namespace std;\n\nclass Solution {\npublic:\n    vector<int> twoSum(vector<int>& nums, int target) {\n        // Your code here\n        \n    }\n};",
                 language="python",
-                solution_logic="Use two-pointer technique swapping elements from start and end."
+                solution_logic="Use a hash map to store visited numbers and their indices, checking if target - num exists in the map.",
+                test_cases=[
+                    {"input": "[[2, 7, 11, 15], 9]", "expected": "[0, 1]"},
+                    {"input": "[[3, 2, 4], 6]", "expected": "[1, 2]"},
+                    {"input": "[[3, 3], 6]", "expected": "[0, 1]"}
+                ]
             )
         )

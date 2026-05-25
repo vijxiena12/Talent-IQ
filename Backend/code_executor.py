@@ -13,72 +13,78 @@ TIMEOUT_SECONDS = 5
 
 def run_local_python(code: str, test_cases: List[Dict[str, Any]]) -> Dict[str, Any]:
     """Execute Python code locally (Fallback when Docker is missing)."""
-    results = []
-    
     # Create a temporary script that includes the user code and test runner
     runner_template = """
 import json
 import sys
+import traceback
 
-{user_code}
-
-def run_tests():
+try:
+    exec_globals = {exec_globals}
+    exec({user_code_repr}, exec_globals)
+    
     test_cases = {test_cases}
     results = []
+    all_passed = True
     
-    # We assume the user defined a function, or we'll try to find a function to call
-    import inspect
-    import __main__
+    user_funcs = [v for k, v in exec_globals.items() if callable(v) and not k.startswith("__")]
     
-    funcs = [obj for name, obj in inspect.getmembers(__main__) if inspect.isfunction(obj) and obj.__module__ == '__main__']
+    if not user_funcs:
+        print(json.dumps({"success": False, "error": "No function defined in code. Please define a function (e.g. def two_sum(...))."}))
+        sys.exit(0)
+        
+    target_func = user_funcs[0]
     
-    if not funcs:
-        print(json.dumps({{"success": False, "error": "No function defined"}}))
-        return
-
-    target_func = funcs[0] # Pick the first defined function
-    
-    for tc in test_cases:
+    for i, tc in enumerate(test_cases):
+        input_val = tc.get("input", "")
+        expected = tc.get("expected", "")
+        
+        args = []
+        if input_val != "":
+            try:
+                parsed = json.loads(input_val)
+                if isinstance(parsed, list):
+                    args = parsed
+                else:
+                    args = [parsed]
+            except:
+                if isinstance(input_val, str):
+                    args = [x.strip() for x in input_val.split(",")]
+                else:
+                    args = [input_val]
+                    
         try:
-            # Handle empty inputs
-            if not tc.get("input"):
-                output = target_func()
-            else:
-                # Basic parsing for common input types
-                args = tc["input"].split(",")
-                processed_args = []
-                for a in args:
-                    a = a.strip()
-                    try:
-                        if '.' in a: processed_args.append(float(a))
-                        else: processed_args.append(int(a))
-                    except:
-                        processed_args.append(a)
+            output = target_func(*args)
+            actual = str(output)
+            passed = str(actual).strip().lower() == str(expected).strip().lower()
+            if not passed:
+                all_passed = False
                 
-                output = target_func(*processed_args)
-            
-            results.append({{
-                "input": tc["input"],
-                "expected": tc["expected"],
-                "actual": str(output),
-                "passed": str(output).strip().lower() == str(tc["expected"]).strip().lower()
-            }})
-        except Exception as e:
-            results.append({{
-                "input": tc["input"],
-                "expected": tc["expected"],
-                "actual": f"Error: {{str(e)}}",
+            results.append({
+                "test": i + 1,
+                "input": input_val,
+                "expected": str(expected),
+                "actual": actual,
+                "passed": passed
+            })
+        except Exception as run_err:
+            all_passed = False
+            results.append({
+                "test": i + 1,
+                "input": input_val,
+                "expected": str(expected),
+                "actual": f"Runtime Error: {str(run_err)}",
                 "passed": False
-            }})
+            })
             
-    print(json.dumps({{"success": True, "test_results": results}}))
-
-if __name__ == "__main__":
-    run_tests()
+    print(json.dumps({"success": True, "test_results": results, "all_passed": all_passed}))
+except Exception as e:
+    print(json.dumps({"success": False, "error": str(e), "trace": traceback.format_exc()}))
 """
     
     full_code = runner_template.format(
-        user_code=code,
+        exec_globals="{}",
+        user_code_repr=repr(code),
         test_cases=json.dumps(test_cases)
     )
     

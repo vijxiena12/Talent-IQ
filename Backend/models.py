@@ -54,8 +54,11 @@ class DSAQuestion(BaseModel):
     description: str
     constraints: List[str]
     base_code: str
+    python_base_code: Optional[str] = ""
+    cpp_base_code: Optional[str] = ""
     language: str
     solution_logic: str # For AI comparison
+    test_cases: List[dict] = []
 
 class AssessmentData(BaseModel):
     mcqs: List[MCQQuestion]
