@@ -26,7 +26,7 @@ export default function Settings() {
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
 
   // User state details
-  const [userRole, setUserRole] = useState<string>("INDIVIDUAL")
+  const [userRole, setUserRole] = useState<"RECRUITER" | "INDIVIDUAL">("INDIVIDUAL")
 
   // Form fields
   const [fullName, setFullName] = useState("")
@@ -72,7 +72,7 @@ export default function Settings() {
     try {
       const parsed = JSON.parse(userStr)
       if (parsed.role) {
-        setUserRole(parsed.role)
+        setUserRole(parsed.role === "RECRUITER" ? "RECRUITER" : "INDIVIDUAL")
       }
 
       const response = await api.get("/user/dashboard")

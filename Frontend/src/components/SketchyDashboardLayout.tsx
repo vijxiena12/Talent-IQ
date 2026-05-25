@@ -7,7 +7,7 @@ import { SquiggleFilter, GraphPaper } from "@/components/ui/Sketchy"
 interface SketchyDashboardLayoutProps {
   title: string
   children: React.ReactNode
-  role?: string
+  role?: "RECRUITER" | "INDIVIDUAL"
   headerAction?: React.ReactNode
 }
 

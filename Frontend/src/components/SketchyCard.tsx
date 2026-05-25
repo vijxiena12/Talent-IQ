@@ -1,9 +1,8 @@
 import React from "react"
 import { cn } from "@/lib/utils"
-import { motion } from "framer-motion"
+import { HTMLMotionProps, motion } from "framer-motion"
 
-export interface SketchyCardProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode
+export interface SketchyCardProps extends HTMLMotionProps<"div"> {
   hover?: boolean
   sketchFilter?: boolean
 }

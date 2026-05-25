@@ -238,20 +238,6 @@ Talent-IQ/
 
 ---
 
-## 🔗 API Endpoints Overview
-
-| Method | Endpoint | Access | Description |
-| :--- | :--- | :--- | :--- |
-| **POST** | `/api/auth/signup` | Public | Candidate / Recruiter registration |
-| **POST** | `/api/auth/login` | Public | JWT Token generation and verification |
-| **POST** | `/api/candidate/upload-resume` | Candidate | Extracts PDF metadata and embeds to ChromaDB |
-| **GET** | `/api/candidate/ats-score` | Candidate | Fetches semantic score and missing skills details |
-| **POST** | `/api/interview/start` | Candidate | Spawns Agent 1 to generate adaptive tech questions |
-| **POST** | `/api/interview/submit-reply` | Candidate | Saves responses and grades them via Agent 2 |
-| **POST** | `/api/recruiter/job-post` | Recruiter | Publishes a new job role template |
-| **GET** | `/api/recruiter/candidates-pipeline` | Recruiter | Returns ranked pipeline sorted by ATS & Integrity scores |
-
----
 
 ## 🚀 Future Scope
 
@@ -264,5 +250,4 @@ Talent-IQ/
 
 ## 👥 Contributors
 
-* **Anika Kaushik** (24CFT0202) — Chitkara University, Punjab
-* **Manav Verma** — Chitkara University, Punjab
+* **Anika Kaushik** — Chitkara University, Punjab

@@ -350,7 +350,7 @@ export default function IndividualDashboard() {
               </Badge>
             </div>
             <div className="flex flex-wrap gap-3">
-              {(matchedSkills.length > 0 ? matchedSkills : ["No matched skills yet."]).map((skill, idx) => (
+              {(matchedSkills.length > 0 ? matchedSkills : ["No matched skills yet."]).map((skill: any, idx: number) => (
                 <span key={idx} className="rounded-full bg-emerald-100 px-4 py-2 text-sm font-semibold text-emerald-700">
                   {typeof skill === "object" ? (skill.requirement || skill.skill || JSON.stringify(skill)) : skill}
                 </span>
@@ -369,7 +369,7 @@ export default function IndividualDashboard() {
               </Badge>
             </div>
             <div className="flex flex-wrap gap-3">
-              {(missingSkills.length > 0 ? missingSkills : ["No missing skills yet."]).map((skill, idx) => (
+              {(missingSkills.length > 0 ? missingSkills : ["No missing skills yet."]).map((skill: any, idx: number) => (
                 <span key={idx} className="rounded-full bg-rose-100 px-4 py-2 text-sm font-semibold text-rose-700">
                   {typeof skill === "object" ? (skill.requirement || skill.skill || JSON.stringify(skill)) : skill}
                 </span>

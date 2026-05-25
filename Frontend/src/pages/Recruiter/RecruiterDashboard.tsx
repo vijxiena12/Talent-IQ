@@ -480,9 +480,6 @@ export default function RecruiterDashboard() {
               </div>
             )}
           </AnimatePresence>
-        </div>
-      </div>
     </SketchyDashboardLayout>
   )
-}
 }
