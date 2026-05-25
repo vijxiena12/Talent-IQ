@@ -238,7 +238,10 @@ Talent-IQ/
 
 ---
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 43cdc02f0bc5eaaf3fc907d78655a56ec036df4b
 ## 🚀 Future Scope
 
 * **Recruiter Workspace Enhancements:** Expanding recruiter dashboards with customizable grading rubrics, automated email triggers, candidate comparison view, and job role templates.
@@ -250,4 +253,9 @@ Talent-IQ/
 
 ## 👥 Contributors
 
+<<<<<<< HEAD
 * **Anika Kaushik** — Chitkara University, Punjab
+=======
+* **Anika Kaushik**  — Chitkara University, Punjab
+
+>>>>>>> 43cdc02f0bc5eaaf3fc907d78655a56ec036df4b
